@@ -308,7 +308,7 @@ button.pack(side = "bottom", pady=10)
 
 #Create a button to set the course information
 buttonKeyWindow = tk.Button(tab1, text = "Set Course Information", command = keyWindow)
-buttonKeyWindow.pack(side = "bottom", pady = 10)
+buttonKeyWindow.pack(side = "top", pady = 10)
 
 # Bulk Tab (tab2)
 # The bulk tab will be able to list the assignments from a Canvas course
