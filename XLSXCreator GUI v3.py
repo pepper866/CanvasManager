@@ -3,8 +3,30 @@ from datetime import date
 from datetime import datetime
 from datetime import timedelta
 import tkinter as tk
+from canvasapi import Canvas
+from tkinter import ttk
 from tkcalendar import Calendar, DateEntry
 
+# helper method for date range
+# All credit goes to this source:
+# https://stackoverflow.com/questions/1060279/iterating-through-a-range-of-dates-in-python
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
+
+
+# helper method to get abbreviation for the day
+def getDay(x):
+  if x == 0:
+    return "M"
+  elif x == 1:
+    return "T"
+  elif x == 2:
+    return "W"
+  elif x == 3:
+    return "R"
+  elif x == 4:
+    return "F"
 
 
 def keyWindow():
@@ -47,6 +69,7 @@ def helpWindow():
 # Given start of semester, days of week class meets, and special days off (breaks and other days) 
 # create the schedule template as xlsx file so prof can start planning
 def createXLSX():
+  # get our data from the professor's input
   name = title.get()
   first_day = cal1.get_date()
   last_day = cal2.get_date()
@@ -67,8 +90,9 @@ def createXLSX():
   first_of_week = meeting_days[0]
 
   days_off = {date(2023, 2, 3): "Study Day", date(2023, 2, 13): "In Service Day"}
+  #days_off = {}
     
-  # create array to hold csv data
+  # create array to hold xlsx data
   data = []
 
   # index to track which day we are on in the list
@@ -82,11 +106,11 @@ def createXLSX():
   data.append(["Week", "Class", "Date", "Day", "Topic", "Assignment", "Notes"])
 
   # iterate though each day of the semester
-  for single_date in daterange(first_day, last_day):
+  for single_date in daterange(first_day, last_day + timedelta(days=1)):
     # create array to hold data for current date
     data_row = []
 
-    # get weekday as integer, change that integer to a string
+    # get weekday as integer
     day = single_date.weekday()
 
     # check : 1) if current date is one of the meeting days
@@ -109,7 +133,7 @@ def createXLSX():
       if single_date in days_off:
         data_row[4] = "NO CLASS - " + days_off[single_date]
 
-      # add row to our CSV array
+      # add row to our xlsx array
       data.append(data_row)
       index += 1
 
@@ -117,52 +141,77 @@ def createXLSX():
     if day == 4:
       data.append([])
 
-    # generate xlsx to hold data
-    workbook = xlsxwriter.Workbook(name + '.xlsx')
-    worksheet = workbook.add_worksheet()
+  # generate xlsx to hold data
+  workbook = xlsxwriter.Workbook(name + '.xlsx')
+  worksheet = workbook.add_worksheet()
+  
+  # write all of our data to the xlsx file
+  for row_num, row_data in enumerate(data):
+    for col_num, col_data in enumerate(row_data):
+      worksheet.write(row_num, col_num, col_data)
 
-    for row_num, row_data in enumerate(data):
-      for col_num, col_data in enumerate(row_data):
-        worksheet.write(row_num, col_num, col_data)
+  # generate second worksheet for assignments
+  worksheet2 = workbook.add_worksheet("Assignments")
 
-    workbook.close()
+  #create list of headers for our second tab
+  assignData = ["key", "Name", "Due Date", "Type", "Details", "Submission", 
+                     "File Extension", "Points", "Group"]
+
+  # write the headers to our Assignments tab
+  worksheet2.write_row(0, 0, assignData)
+
+  workbook.close()
 
 # create our tKinter object
 root = tk.Tk()
 
 # set the size of the window
-root.geometry("600x400")
+root.geometry("600x600")
 
 # add a title to the window
 root.title("XLSX Template Creator v3")
 
+# Create our three tabs (Start, Bulk, Clear)
+tabControl = ttk.Notebook(root)
+tab1 = ttk.Frame(tabControl)
+tab2 = ttk.Frame(tabControl)
+tab3 = ttk.Frame(tabControl)
+
+# add some title for our tabs
+tabControl.add(tab1, text ='Start')
+tabControl.add(tab2, text ='Bulk')
+tabControl.add(tab3, text ='Clear')
+tabControl.pack(expand = 1, fill ="both")
+
+# Start Tab (tab1)
+
 # add a text box to enter class title
-label = tk.Label(root, text="Enter Class Name:")
+label = tk.Label(tab1, text="Enter Class Name:")
 label.pack(side="top", pady=10)
-title = tk.Entry(root, bd=5)
+title = tk.Entry(tab1, bd=5)
 title.pack(side="top")
 
 # add a box to select the first day of semester
-L1 = tk.Label(root, text="Select First Day: ")
+L1 = tk.Label(tab1, text="Select First Day: ")
 L1.pack(side="top", pady=10)
-cal1 = DateEntry(root, selectmode='day')
+cal1 = DateEntry(tab1, selectmode='day')
 cal1.pack(side="top")
 
 # add a box to select the last day of semester
-L2 = tk.Label(root, text="Select Last Day: ")
+L2 = tk.Label(tab1, text="Select Last Day: ")
 L2.pack(side="top", pady=10)
-cal2 = DateEntry(root, selectmode='day')
+cal2 = DateEntry(tab1, selectmode='day')
 cal2.pack(side="top")
 
 # add button to select days of week
 # this will be a list of 5 check buttons M-F
-label_days = tk.Label(root, text="Select Days of Week:")
+label_days = tk.Label(tab1, text="Select Days of Week:")
 label_days.pack(side="top", pady=10)
 
 # add five checkbuttons, one for each for each day of week (M-F)
 # I know it's clunky but trust me it's the only way
 CheckbuttonM = tk.IntVar()
-ButtonM = tk.Checkbutton(root,
+ButtonM = tk.Checkbutton(tab1,
                           text="M",
                           variable=CheckbuttonM,
                           onvalue=1,
@@ -173,7 +222,7 @@ ButtonM = tk.Checkbutton(root,
 ButtonM.pack(side="left", anchor='n', padx=(130,0))
 
 CheckbuttonT = tk.IntVar()
-ButtonT = tk.Checkbutton(root,
+ButtonT = tk.Checkbutton(tab1,
                           text="T",
                           variable=CheckbuttonT,
                           onvalue=1,
@@ -184,7 +233,7 @@ ButtonT = tk.Checkbutton(root,
 ButtonT.pack(side="left", anchor='n')
 
 CheckbuttonW = tk.IntVar()
-ButtonW = tk.Checkbutton(root,
+ButtonW = tk.Checkbutton(tab1,
                           text="W",
                           variable=CheckbuttonW,
                           onvalue=1,
@@ -195,7 +244,7 @@ ButtonW = tk.Checkbutton(root,
 ButtonW.pack(side="left", anchor='n')
 
 CheckbuttonR = tk.IntVar()
-ButtonR = tk.Checkbutton(root,
+ButtonR = tk.Checkbutton(tab1,
                           text="R",
                           variable=CheckbuttonR,
                           onvalue=1,
@@ -206,7 +255,7 @@ ButtonR = tk.Checkbutton(root,
 ButtonR.pack(side="left", anchor='n')
 
 CheckbuttonF = tk.IntVar()
-ButtonF = tk.Checkbutton(root,
+ButtonF = tk.Checkbutton(tab1,
                           text="F",
                           variable=CheckbuttonF,
                           onvalue=1,
@@ -216,33 +265,101 @@ ButtonF = tk.Checkbutton(root,
 
 ButtonF.pack(side="left", anchor='n')
 
+# Add Calendar
+cal = Calendar(tab1, selectmode = 'day',
+               year = 2020, month = 5,
+               day = 22)
+ 
+cal.place(anchor='n', x = 175, y = 350)
+
+#Define Function to select the date
+def get_day():
+  last_day_off.config(text="Day Off Added: " + cal.get_date())
+  dayOffBox.insert(tk.END, cal.get_date() + "\n")
+
+
+
+
+#Create a button to pick the days off (one at a time)
+button = tk.Button(tab1, text="Select Day Off", command=get_day)
+button.place(anchor='n', x = 170, y = 290)
+
+#Create label to display last day off added
+last_day_off = tk.Label(root, text = "")
+last_day_off.place(anchor='n', x = 170, y = 340)
+
+# add two boxes to select a range of days off
+L3 = tk.Label(tab1, text="Select Range of Days Off: ")
+L3.place(anchor='n', x = 450, y = 290)
+cal3 = DateEntry(tab1, selectmode='day')
+cal3.place(anchor='n', x = 400, y = 320)
+cal4 = DateEntry(tab1, selectmode='day')
+cal4.place(anchor='n', x = 500, y = 320)
+
+# add text box to display all selected days off
+dayOffLabel = tk.Label(tab1, text = "List of Selected Days Off: ")
+dayOffLabel.place(anchor='n', x = 450, y = 360)
+dayOffBox = tk.Text(tab1, height = 10, width = 30)
+dayOffBox.place(anchor='n', x = 450, y = 380)
+
 # finally, add a button to generate the Xlsx template
-button = tk.Button(root, text="Create XLSX File", command= createXLSX)
+button = tk.Button(tab1, text="Create XLSX File", command= createXLSX)
 button.pack(side = "bottom", pady=10)
 
-buttonKeyWindow = tk.Button(root, text = "Set Course Information", command = keyWindow)
-buttonKeyWindow.pack(side = "bottom", pady = 10)
+# Bulk Tab (tab2)
+# The bulk tab will be able to list the assignments from a Canvas course
+# Professers will be able to select assignments (via checkboxes) and 
+# delete them or move them to a new Module
 
-# helper method for date range
-# All credit goes to this source:
-# https://stackoverflow.com/questions/1060279/iterating-through-a-range-of-dates-in-python
-def daterange(start_date, end_date):
-    for n in range(int((end_date - start_date).days)):
-        yield start_date + timedelta(n)
+# First use Rachel's code to connect to Canvas course
+# Canvas API URL
+API_URL = "https://ursinus.instructure.com"
+# Canvas API key
+API_KEY = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
 
+# Initialize a new Canvas object
+canvas = Canvas(API_URL, API_KEY)
 
-# helper method to get abbreviation for the day
-def getDay(x):
-  if x == 0:
-    return "M"
-  elif x == 1:
-    return "T"
-  elif x == 2:
-    return "W"
-  elif x == 3:
-    return "R"
-  elif x == 4:
-    return "F"
+# Grab course 123456
+course = canvas.get_course(15293)
+
+# Get list of all assignmnets from our Canvas course
+assignments = course.get_assignments()
+
+# create checkboxes for all assignments in this course
+def show_assignments2():
+  for a in assignments:
+    assignmentBox.insert(tk.END, a)
+    assignmentBox.insert(tk.END,  '\n')
+
+def show_assignments():
+  for a in assignments:
+    assignments[a] = tk.Variable()
+    check = tk.Checkbutton(tab2, text=a, variable=assignments[a])
+    check.pack(side = "bottom")
   
-    
+#Create a button generate a list of all assignments
+button = tk.Button(tab2, text="Show Assigments", command=show_assignments2)
+button.pack(side="top", pady = 50)
+
+# add text box to display all assignments
+assingmentLabel = tk.Label(tab2, text = "List of Assignments: ")
+assingmentLabel.pack(side="top")
+assignmentBox = tk.Text(tab2, height = 20, width = 60)
+assignmentBox.pack(side="top")
+
+# Clear Tab (tab3)
+
+# this will be Rachel's code to delete assignments from Canvas
+def clear_assignments():
+  return 0 #placeholder
+
+# add a button to clear all assignments from canvas page
+button = tk.Button(tab3, text="Clear Assignments", command=clear_assignments)
+button.pack(side="top", pady = 50)
+
+
+# run our tkinter loop
 root.mainloop()
+
+
