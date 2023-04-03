@@ -32,17 +32,11 @@ for module in modules:
     
 #sort module names
 moduleNames.sort()
-print(moduleNames)
-print(moduleTable)
     
 #go through all names in order, then edit their position
 index = 1
 for name in moduleNames:
-    print(name)
-    print(moduleTable[name])
-    print(index)
     module = course.get_module(moduleTable[name])
-    print(module.position)
     module.edit(module = {'position': index})
                 
     index+=1
