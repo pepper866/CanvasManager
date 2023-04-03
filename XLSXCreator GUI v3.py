@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 import tkinter as tk
 from canvasapi import Canvas
-from tkinter import ttk
+from tkinter import ttk, filedialog
 from tkcalendar import Calendar, DateEntry
 
 # helper method for date range
@@ -28,6 +28,10 @@ def getDay(x):
   elif x == 4:
     return "F"
 
+def selectFile():
+    tab1.filename = filedialog.askopenfilename(initialdir = "./", title = "Select Finished Sheet")
+    fileLabel = tk.Label(tab1, text = tab1.filename)
+    fileLabel.pack(side = "right")
 
 def keyWindow():
     window = tk.Tk()
@@ -309,6 +313,11 @@ button.pack(side = "bottom", pady=10)
 #Create a button to set the course information
 buttonKeyWindow = tk.Button(tab1, text = "Set Course Information", command = keyWindow)
 buttonKeyWindow.pack(side = "top", pady = 10)
+
+
+#Create button to select File
+buttonFileSelect = tk.Button(tab1, text = "Select File", command = selectFile)
+buttonFileSelect.pack(side = "right")
 
 # Bulk Tab (tab2)
 # The bulk tab will be able to list the assignments from a Canvas course
