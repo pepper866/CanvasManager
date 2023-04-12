@@ -32,13 +32,18 @@ grade_changes = {}
 #then we get all grade changes for the past 24 hours
 for user in users:
     print(user)
+    thing = user.get_grade_change_events_for_student()
+    print("events")
+    for x in thing:
+        print(x)
+    print(user.get_grade_change_events_for_student())
     grade_changes[user.id] = (user.get_grade_change_events_for_student())
     #grade_changes.append(user.get_grade_change_events_for_student(start_time = datetime.now() - timedelta(days=1), end_time = datetime.now()))
 
 #then send email
 for user in users:
     profile = user.get_profile()
-    email = profile.email
+    email = profile.User[primary_email]
     msg = "Here are the changes in grades from the last 24 hours" + grade_changes[user.id]
     
     #send email somehow 
