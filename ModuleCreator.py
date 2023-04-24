@@ -28,7 +28,14 @@ def load_assignments(filename):
   data = df.values
   assignments = {}
   for row in data:
+      
+      for i in range(len(row)):
+          
+          if(pandas.isna(row[i])):
+              row[i] = ""
+      
       thing = AssignmentInfo.AssignmentInfo(row)
+      
       #thing.addData(row)
       assignments[row[0]] = thing
       print(row[0])
@@ -134,8 +141,13 @@ def make_assignment(course, mod, data,
   format = '%m/%d/%Y'
 
   # convert from string format to datetime format
-  date = datetime.datetime.strptime(data.due_date, format)
-
+  date = data.due_date
+  '''
+  if(not data.due_date==""):
+      date = datetime.datetime.strptime((data.due_date), format)
+  else:
+      date = ""
+      '''
   new_assignment = course.create_assignment({
     'id': id,
     'name': data.title,
@@ -167,16 +179,16 @@ def make_assignment(course, mod, data,
 # Canvas API URL
 def ModuleCreator(course_id, key, filename):
     
-    
+    #filename = "./Syl.xlsm"
     
     if(key == -1 or key == ""):
         print("Error: No Course ID or Key")
         return
 
-    COURSE_ID = course_id = 15293
+    COURSE_ID = course_id #15293
     API_URL = "https://ursinus.instructure.com"
     # Canvas API key
-    API_KEY = key  = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+    API_KEY = key #"6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
     
     # Initialize a new Canvas object
     canvas = Canvas(API_URL, API_KEY)
@@ -190,3 +202,6 @@ def ModuleCreator(course_id, key, filename):
     #assignments = load_assignments(filename)
     #load_modules(filename)
     make_modules(course, filename)
+    
+    
+ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
