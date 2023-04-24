@@ -1,6 +1,5 @@
 # Import the Canvas class
 from canvasapi import Canvas
-import csv
 import datetime
 import AssignmentInfo
 import pandas
@@ -16,9 +15,9 @@ print(name)
 '''
 
 
-def load_assignments():
+def load_assignments(filename):
     
-  df = pandas.read_excel("./Testing 2.xlsx", sheet_name=1)
+  df = pandas.read_excel(filename, sheet_name=1)
   '''
   data = []
   with open("./Assignments.csv", 'r') as file:
@@ -43,12 +42,12 @@ def load_assignments():
   return assignments
 
 
-def load_modules():
+def load_modules(filename):
   print("Hi")
   '''data = pandas.read_excel("./Test.xlsm")
   return data'''
   
-  df = pandas.read_excel("./Testing 2.xlsx", sheet_name=0)
+  df = pandas.read_excel(filename, sheet_name=0)
   print(df)
   
   '''
@@ -63,12 +62,12 @@ def load_modules():
   
 
 
-def make_modules():
+def make_modules(course, filename):
   #create module
 
-  #read csv file
-  data = load_modules()
-  assignments_data = load_assignments()
+  #read file
+  data = load_modules(filename)
+  assignments_data = load_assignments(filename)
   existing_assignments = course.get_assignments()
   #assignments_data = None
   #create modules for each week
@@ -116,12 +115,12 @@ def make_modules():
 
         #new assignment
         if not exists:
-          make_assignment(mod, assignments_data[key], id)
+          make_assignment(course, mod, assignments_data[key], id)
           id += 1
           print("Making Assignment: ", key)
 
 
-def make_assignment(mod, data,
+def make_assignment(course, mod, data,
                     id):  #called from make_modules DO NOT CALL OTHERWISE
   #new_assign = course.create_assignment({'name': title})
   #find assignment by query
@@ -166,20 +165,28 @@ def make_assignment(mod, data,
 
 #MAIN
 # Canvas API URL
-COURSE_ID = 15293
-API_URL = "https://ursinus.instructure.com"
-# Canvas API key
-API_KEY = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+def ModuleCreator(course_id, key, filename):
+    
+    
+    
+    if(key == -1 or key == ""):
+        print("Error: No Course ID or Key")
+        return
 
-# Initialize a new Canvas object
-canvas = Canvas(API_URL, API_KEY)
-# Grab course 123456
-course = canvas.get_course(COURSE_ID)
-
-# Access the course's name
-name = course.name
-print(name)
-
-#assignments = load_assignments()
-#load_modules()
-make_modules()
+    COURSE_ID = course_id = 15293
+    API_URL = "https://ursinus.instructure.com"
+    # Canvas API key
+    API_KEY = key  = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+    
+    # Initialize a new Canvas object
+    canvas = Canvas(API_URL, API_KEY)
+    # Grab course 123456
+    course = canvas.get_course(COURSE_ID)
+    
+    # Access the course's name
+    name = course.name
+    print(name)
+    
+    #assignments = load_assignments(filename)
+    #load_modules(filename)
+    make_modules(course, filename)
