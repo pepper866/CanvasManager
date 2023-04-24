@@ -19,52 +19,24 @@ def makeStartTab(root):
         fileLabel.pack(side = "right")
         print("hello")
         print(root.filename)
+        
+    def openInfoSave():
+        courseIDVar, keyVar  = SaveInfoWindow()
+        print(keyVar.get(), "<- key, course ID -> ", courseIDVar.get())
+        print(keyVar, courseIDVar)
+        nonlocal key
+        key = keyVar.get()
+        if courseIDVar.get():
+            nonlocal courseID 
+            courseID = int(courseIDVar.get())
+        print(key, courseID)
+        #print(courseID.type)
 
 
-    def keyWindow():
-        window = tk.Tk()
-        window.geometry("600x400")
-        window.title("Course Information Updater")
-        buttonSAndQ = tk.Button(window, text = "Save and Close Window", command = window.destroy)
-        buttonSAndQ.pack(side="bottom")
-        
-        # add a text box to enter course ID
-        courseIDLabel = tk.Label(window, text="Enter Course ID:")
-        courseIDLabel.pack(side="top", pady=10)
-        courseID = tk.Entry(window, bd=5)
-        courseID.pack(side="top")
-        
-        # add a text box to enter key
-        keyLabel = tk.Label(window, text="Enter Your Key:")
-        keyLabel.pack(side="top", pady=10)
-        key = tk.Entry(window, bd=5)
-        key.pack(side="top")
-        
-        buttonHelp = tk.Button(window, text = "Help", command = helpWindow)
-        buttonHelp.pack(side="bottom")
-    
-    
-    def helpWindow():
-        helpWindow = tk.Tk()
-        helpWindow.geometry("800x200")
-        helpWindow.title("Course Information Helper")
-        buttonExit = tk.Button(helpWindow, text = "Exit", command = helpWindow.destroy)
-        buttonExit.pack(side="bottom")
-        
-        course = tk.Label(helpWindow, text="For Course ID: 1. Go to the Canvas for the course. \n2. In the URL link at the top, copy the numbers. Ex: https://ursinus.instructure.com/courses/#####")
-        course.pack(side="top")
-        
-        course = tk.Label(helpWindow, text="For Key: 1. In Canvas, click on your Account -> Settings. \n2. Scroll down past \" Approved Integrations\" and click on \"New Access Token\". \n3. Enter anything for the purpose (Course Setup) and expiration whenever. \n4. Lastly, once it is created you MUST copy the key since it disappears afterwards. Then just enter it into our text box." )
-        course.pack(side="bottom")
-        
     def moduleCreation():
-        ModuleCreator(courseID, key, root.filename) #this does not work
+        ModuleCreator(courseID, key, root.filename) 
     
     
-    
-    
-    
-
     # add method to create xlsx file
     def createFile():
         name = title.get() 
@@ -203,7 +175,7 @@ def makeStartTab(root):
     
     
     #Create a button to set the course information
-    buttonKeyWindow = tk.Button(root, text = "Set Course Information", command = keyWindow)
+    buttonKeyWindow = tk.Button(root, text = "Set Course Information", command = openInfoSave)
     buttonKeyWindow.pack(side = tk.LEFT)  
     
     
@@ -223,5 +195,54 @@ def makeStartTab(root):
     # finally, add a button to generate the Xlsx template
     button = tk.Button(root, text="Create Spreadsheet", command= createFile)
     button.pack(side = "top", pady=10)
+    
+def SaveInfoWindow():
+    
+    
+    keywindow = tk.Toplevel()
+    keywindow.geometry("600x400")
+    keywindow.title("Course Information Updater")
+    
+    
+    # add a text box to enter course ID
+    IDVar = tk.StringVar()
+    courseIDLabel = tk.Label(keywindow, text="Enter Course ID:")
+    courseIDLabel.pack(side="top", pady=10)
+    courseIDEntry = tk.Entry(keywindow, bd=5, textvariable=IDVar)
+    courseIDEntry.pack(side="top")
+    
+    # add a text box to enter key
+    keyVar = tk.StringVar()
+    keyLabel = tk.Label(keywindow, text="Enter Your Key:")
+    keyLabel.pack(side="top", pady=10)
+    keyEntry = tk.Entry(keywindow, bd=5, textvariable = keyVar)
+    keyEntry.pack(side="top")
+    
+    buttonSAndQ = tk.Button(keywindow, text = "Save and Close Window", command = keywindow.destroy)
+    buttonSAndQ.pack(side="bottom")
+    
+    buttonHelp = tk.Button(keywindow, text = "Help", command = helpWindow)
+    buttonHelp.pack(side="bottom")
+    
+    keywindow.wait_window()
+    
+    print("reached end of save info stuff")
+    print(IDVar.get())
+    return IDVar, keyVar
+
+    
+        
+def helpWindow():
+    helpWindow = tk.Tk()
+    helpWindow.geometry("800x200")
+    helpWindow.title("Course Information Helper")
+    buttonExit = tk.Button(helpWindow, text = "Exit", command = helpWindow.destroy)
+    buttonExit.pack(side="bottom")
+    
+    course = tk.Label(helpWindow, text="For Course ID: 1. Go to the Canvas for the course. \n2. In the URL link at the top, copy the numbers. Ex: https://ursinus.instructure.com/courses/#####")
+    course.pack(side="top")
+    
+    course = tk.Label(helpWindow, text="For Key: 1. In Canvas, click on your Account -> Settings. \n2. Scroll down past \" Approved Integrations\" and click on \"New Access Token\". \n3. Enter anything for the purpose (Course Setup) and expiration whenever. \n4. Lastly, once it is created you MUST copy the key since it disappears afterwards. Then just enter it into our text box." )
+    course.pack(side="bottom")
     
     

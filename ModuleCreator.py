@@ -177,15 +177,15 @@ def make_assignment(course, mod, data,
 
 #MAIN
 # Canvas API URL
-def ModuleCreator(course_id, key, filename):
+def ModuleCreator(courseID, key, filename):
     
     #filename = "./Syl.xlsm"
     
-    if(key == -1 or key == ""):
+    if(courseID < 0 or key == ""):
         print("Error: No Course ID or Key")
         return
 
-    COURSE_ID = course_id #15293
+    COURSE_ID = courseID #15293
     API_URL = "https://ursinus.instructure.com"
     # Canvas API key
     API_KEY = key #"6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
@@ -198,10 +198,10 @@ def ModuleCreator(course_id, key, filename):
     # Access the course's name
     name = course.name
     print(name)
-    
+   
     #assignments = load_assignments(filename)
     #load_modules(filename)
     make_modules(course, filename)
     
     
-ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
+#ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
