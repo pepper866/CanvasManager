@@ -30,7 +30,13 @@ def makeStartTab(root):
             nonlocal courseID 
             courseID = int(courseIDVar.get())
         print(key, courseID)
-        #print(courseID.type)
+        
+        #write to a txt file so other tabs can use the same info
+        with open ("CanvasInfo.txt", 'w') as file:
+            string = str(courseID)+ "\n"+ key
+            file.write(string)
+            file.close()
+            
 
 
     def moduleCreation():
