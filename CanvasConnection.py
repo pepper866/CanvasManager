@@ -2,7 +2,8 @@
 # Import the Canvas class
 from canvasapi import Canvas
 import os.path
-
+courseID = -1
+key = ""
 if(os.path.isfile("./CanvasInfo.txt")):
         #read in the course id and key 
         with open ("./CanvasInfo.txt", 'r') as file:
@@ -28,7 +29,7 @@ API_KEY = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW
 canvas = Canvas(API_URL, API_KEY)
 
 # Grab course 123456
-course = canvas.get_course(15293)
+course = canvas.get_course(courseID)
 
 # Access the course's name
 name= course.name

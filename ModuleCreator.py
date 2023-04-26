@@ -3,6 +3,7 @@ from canvasapi import Canvas
 import datetime
 import AssignmentInfo
 import pandas
+import os.path
 
 '''
 course.update(course={'name': 'New Course Name'})
@@ -81,7 +82,7 @@ def make_modules(course, filename):
   mod = None
   start = False
   id = 0
-  for r in range(15):  #just read first 10 lines for now
+  for r in range(len(data)):  #just read first 10 lines for now
     row = data[r]
 
     if row[0] != '' and not pandas.isna(row[0]):
@@ -91,10 +92,19 @@ def make_modules(course, filename):
       mod = course.create_module(module={'name': title})
       start = True
     print(r, " ", row[1])
+    
     if row[1] != '' and not pandas.isna(row[1]) and start:
       print(row)
       #new class day (module item subheader)
-      title = "Day #" + str(int(row[1])) + " " + str(row[2])  + " " + str(row[4])
+      
+      formattedDate = row[2].strftime("%m/%d/%Y")
+      
+      if pandas.isna(row[4]):
+          topic = ""
+      else:
+          topic = str(row[4])
+          
+      title = "Day #" + str(int(row[1])) + " " + formattedDate  + " " + topic
       print(title)
       mod.create_module_item(module_item={'title': title, 'type': 'SubHeader'})
 
@@ -184,6 +194,9 @@ def ModuleCreator(courseID, key, filename):
     if(courseID < 0 or key == ""):
         print("Error: No Course ID or Key")
         return
+    if(not os.path.isfile(filename)):
+        print("No file found")
+        return
 
     COURSE_ID = courseID #15293
     API_URL = "https://ursinus.instructure.com"
@@ -204,4 +217,4 @@ def ModuleCreator(courseID, key, filename):
     make_modules(course, filename)
     
     
-#ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
+ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
