@@ -32,10 +32,11 @@ def makeStartTab(root):
         print(key, courseID)
         
         #write to a txt file so other tabs can use the same info
-        with open ("CanvasInfo.txt", 'w') as file:
-            string = str(courseID)+ "\n"+ key
-            file.write(string)
-            file.close()
+        if courseID != -1 and key !="":
+            with open ("CanvasInfo.txt", 'w') as file:
+                string = str(courseID)+ "\n"+ key
+                file.write(string)
+                file.close()
             
 
 

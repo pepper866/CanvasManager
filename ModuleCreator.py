@@ -110,6 +110,7 @@ def make_modules(course, filename):
 
       #mod #assignment info
       if row[5] != '' and not pandas.isna(row[5]):
+        #assignment found
         key = row[5]
         print(row[5])
         print("is it nan?")
@@ -132,9 +133,13 @@ def make_modules(course, filename):
 
         #new assignment
         if not exists:
-          make_assignment(course, mod, assignments_data[key], id)
-          id += 1
-          print("Making Assignment: ", key)
+            if assignments_data[key]:
+              make_assignment(course, mod, assignments_data[key], id)
+              id += 1
+              print("Making Assignment: ", key)
+            else:
+                #could not find the data for it
+                print("no data found for assignment", key)
 
 
 def make_assignment(course, mod, data,
@@ -217,4 +222,4 @@ def ModuleCreator(courseID, key, filename):
     make_modules(course, filename)
     
     
-ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
+#ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")
