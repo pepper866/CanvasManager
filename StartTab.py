@@ -126,10 +126,10 @@ def makeStartTab(root):
             button_save.pack(side="bottom")
             
             #create button to close window
-            button_save = ttk.Button(window, 
+            button_close = ttk.Button(window, 
                     text="Close Window",
                     command=window.destroy)
-            button_save.pack(side="bottom")
+            button_close.pack(side="bottom")
             
 
         var = tk.IntVar()
@@ -165,8 +165,8 @@ def makeStartTab(root):
  
     cal.pack(side="top", pady = 10)
 
-    #Create list to hold our days off
-    user_days_off = []
+    #Create dictionary to hold our days off
+    user_days_off = {}
 
     # Define Function to select the date
     def get_day():
@@ -187,6 +187,38 @@ def makeStartTab(root):
     
     buttonRunModules = tk.Button(root, text = "Run Module Creation", command = moduleCreation)
     buttonRunModules.pack(side = tk.LEFT)
+            user_days_off[day] = ""
+            
+            #create a pop-up window 
+            window = tk.Toplevel()
+            window.title("Secondary Window")
+            window.config(width=300, height=200)
+            
+            # add option to enter reason for day off
+            reasonLabel = tk.Label(window, text="Enter reason for day off on " + day + ":")
+            reasonLabel.pack(side="top", pady=10)
+            reason = tk.Entry(window, bd=5)
+            reason.pack(side="top")
+            
+            def save_reason():
+                user_days_off[day] = reason.get()
+            
+            #create button to save reason
+            button_save= ttk.Button(window, 
+                    text="Save Day Off Reason",
+                    command=save_reason)
+            button_save.pack(side="bottom")
+            
+            #create button to close window
+            button_close= ttk.Button(window, 
+                    text="Close Window",
+                    command=window.destroy)
+            button_close.pack(side="bottom")
+            
+            
+            
+            
+            
 
     #Create a button to pick the days off (one at a time)
     button = tk.Button(root, text="Select Day Off", command=get_day)
