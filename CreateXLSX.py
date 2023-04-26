@@ -19,8 +19,9 @@ def createXLSX(name, first_day, last_day, meeting_days, user_days_off, recurring
 
   # add all of the professors day off to our dictionary
   for d in user_days_off:
+    reason = user_days_off[d]
     d = datetime.strptime(d, "%m/%d/%y").date()
-    days_off[d] = "[reason for day off]"
+    days_off[d] = reason
 
   # create array to hold xlsx data
   data = []
