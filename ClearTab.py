@@ -24,5 +24,11 @@ def makeClearTab(root):
             if o not in tree.get_checked():
                 tree.change_state(o, "checked")
 
+    def clear_selected():
+        return
+    
     selectAll = tk.Button(root, text="Select All Options", command=select_all)
     selectAll.pack(side="top", pady = 10)
+    
+    clearButton = tk.Button(root, text="Clear Selected", command=clear_selected)
+    clearButton.pack(side="top", pady = 10)
