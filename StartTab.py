@@ -182,12 +182,18 @@ def makeStartTab(root):
     
     
     #Create a button to set the course information
-    buttonKeyWindow = tk.Button(root, text = "Set Course Information", command = openInfoSave)
+    buttonKeyWindow = tk.Button(root, text = "Set Canvas Information", command = openInfoSave)
     buttonKeyWindow.pack(side = tk.LEFT)  
     
     
     buttonRunModules = tk.Button(root, text = "Run Module Creation", command = moduleCreation)
     buttonRunModules.pack(side = tk.LEFT)
+    
+    # finally, add a button to generate the Xlsx template
+    button = tk.Button(root, text="Create Spreadsheet", command= createFile)
+    button.pack(side = tk.RIGHT, pady=10)
+    
+    
     user_days_off[day] = ""
     
     #create a pop-up window 
@@ -231,9 +237,7 @@ def makeStartTab(root):
     dayOffBox = tk.Text(root, height = 10, width = 30)
     dayOffBox.pack(side="top")
 
-    # finally, add a button to generate the Xlsx template
-    button = tk.Button(root, text="Create Spreadsheet", command= createFile)
-    button.pack(side = "top", pady=10)
+    
     
     
 def SaveInfoWindow():
