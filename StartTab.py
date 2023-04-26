@@ -195,7 +195,7 @@ def makeStartTab(root):
     window.config(width=300, height=200)
     
     # add option to enter reason for day off
-    reasonLabel = tk.Label(window, text="Enter reason for day off on " + day + ":")
+    reasonLabel = tk.Label(window, text="Enter reason for day off on " + str(day) + ":")
     reasonLabel.pack(side="top", pady=10)
     reason = tk.Entry(window, bd=5)
     reason.pack(side="top")
