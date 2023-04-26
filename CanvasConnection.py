@@ -1,6 +1,23 @@
 #												SETUP
 # Import the Canvas class
 from canvasapi import Canvas
+import os.path
+
+if(os.path.isfile("./CanvasInfo.txt")):
+        #read in the course id and key 
+        with open ("./CanvasInfo.txt", 'r') as file:
+            lines = file.readlines()
+            file.close()
+        courseID = int(lines[0].strip())
+        API_KEY = lines[1]
+        
+else:
+    #no canvas info has been entered yet!!
+    #for now we just do the research course
+    #surely this isn't a security issue later :)
+    API_KEY = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+    courseID = 15293
+
 
 # Canvas API URL
 API_URL = "https://ursinus.instructure.com"
