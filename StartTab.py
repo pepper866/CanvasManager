@@ -5,6 +5,7 @@ from ttkwidgets import CheckboxTreeview
 from GuiHelpers import getDay
 from CreateXLSX import createXLSX
 from ModuleCreator import ModuleCreator
+import os.path
 
 def makeStartTab(root):
     # Start Tab (tab1)
@@ -42,6 +43,19 @@ def makeStartTab(root):
 
 
     def moduleCreation():
+        
+        if(courseID==-1 or key == ""):
+            #read in the data, if it exists
+            if(os.path.isfile("./CanvasInfo.txt")):
+                #read in the course id and key 
+                with open ("./CanvasInfo.txt", 'r') as file:
+                    lines = file.readlines()
+                    file.close()
+                nonlocal courseID
+                courseID = int(lines[0].strip())
+                nonlocal key
+                key = lines[1]
+        
         ModuleCreator(courseID, key, root.filename) 
 
     # add method to create xlsx file
