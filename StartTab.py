@@ -174,7 +174,8 @@ def makeStartTab(root):
         day = cal.get_date()
         if day not in dayOffBox.get("1.0", tk.END+"-1c"):
             dayOffBox.insert(tk.END, day+ "\n")
-            user_days_off.append(day)
+            user_days_off[day] = ""
+            
     
     #Create button to select File
     buttonFileSelect = tk.Button(root, text = "Select File", command = selectFile)
