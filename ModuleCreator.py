@@ -1,9 +1,9 @@
 # Import the Canvas class
 from canvasapi import Canvas
-import csv
 import datetime
 import AssignmentInfo
 import pandas
+import os.path
 
 '''
 course.update(course={'name': 'New Course Name'})
@@ -16,9 +16,9 @@ print(name)
 '''
 
 
-def load_assignments():
+def load_assignments(filename):
     
-  df = pandas.read_excel("./Testing 2.xlsx", sheet_name=1)
+  df = pandas.read_excel(filename, sheet_name=1)
   '''
   data = []
   with open("./Assignments.csv", 'r') as file:
@@ -29,7 +29,14 @@ def load_assignments():
   data = df.values
   assignments = {}
   for row in data:
+      
+      for i in range(len(row)):
+          
+          if(pandas.isna(row[i])):
+              row[i] = ""
+      
       thing = AssignmentInfo.AssignmentInfo(row)
+      
       #thing.addData(row)
       assignments[row[0]] = thing
       print(row[0])
@@ -43,12 +50,12 @@ def load_assignments():
   return assignments
 
 
-def load_modules():
+def load_modules(filename):
   print("Hi")
   '''data = pandas.read_excel("./Test.xlsm")
   return data'''
   
-  df = pandas.read_excel("./Testing 2.xlsx", sheet_name=0)
+  df = pandas.read_excel(filename, sheet_name=0)
   print(df)
   
   '''
@@ -63,19 +70,19 @@ def load_modules():
   
 
 
-def make_modules():
+def make_modules(course, filename):
   #create module
 
-  #read csv file
-  data = load_modules()
-  assignments_data = load_assignments()
+  #read file
+  data = load_modules(filename)
+  assignments_data = load_assignments(filename)
   existing_assignments = course.get_assignments()
   #assignments_data = None
   #create modules for each week
   mod = None
   start = False
   id = 0
-  for r in range(15):  #just read first 10 lines for now
+  for r in range(len(data)):  #just read first 10 lines for now
     row = data[r]
 
     if row[0] != '' and not pandas.isna(row[0]):
@@ -85,15 +92,25 @@ def make_modules():
       mod = course.create_module(module={'name': title})
       start = True
     print(r, " ", row[1])
+    
     if row[1] != '' and not pandas.isna(row[1]) and start:
       print(row)
       #new class day (module item subheader)
-      title = "Day #" + str(int(row[1])) + " " + str(row[2])  + " " + str(row[4])
+      
+      formattedDate = row[2].strftime("%m/%d/%Y")
+      
+      if pandas.isna(row[4]):
+          topic = ""
+      else:
+          topic = str(row[4])
+          
+      title = "Day #" + str(int(row[1])) + " " + formattedDate  + " " + topic
       print(title)
       mod.create_module_item(module_item={'title': title, 'type': 'SubHeader'})
 
       #mod #assignment info
       if row[5] != '' and not pandas.isna(row[5]):
+        #assignment found
         key = row[5]
         print(row[5])
         print("is it nan?")
@@ -116,12 +133,16 @@ def make_modules():
 
         #new assignment
         if not exists:
-          make_assignment(mod, assignments_data[key], id)
-          id += 1
-          print("Making Assignment: ", key)
+            if assignments_data[key]:
+              make_assignment(course, mod, assignments_data[key], id)
+              id += 1
+              print("Making Assignment: ", key)
+            else:
+                #could not find the data for it
+                print("no data found for assignment", key)
 
 
-def make_assignment(mod, data,
+def make_assignment(course, mod, data,
                     id):  #called from make_modules DO NOT CALL OTHERWISE
   #new_assign = course.create_assignment({'name': title})
   #find assignment by query
@@ -135,8 +156,13 @@ def make_assignment(mod, data,
   format = '%m/%d/%Y'
 
   # convert from string format to datetime format
-  date = datetime.datetime.strptime(data.due_date, format)
-
+  date = data.due_date
+  '''
+  if(not data.due_date==""):
+      date = datetime.datetime.strptime((data.due_date), format)
+  else:
+      date = ""
+      '''
   new_assignment = course.create_assignment({
     'id': id,
     'name': data.title,
@@ -166,20 +192,34 @@ def make_assignment(mod, data,
 
 #MAIN
 # Canvas API URL
-COURSE_ID = 15293
-API_URL = "https://ursinus.instructure.com"
-# Canvas API key
-API_KEY = "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+def ModuleCreator(courseID, key, filename):
+    
+    #filename = "./Syl.xlsm"
+    
+    if(courseID < 0 or key == ""):
+        print("Error: No Course ID or Key")
+        return
+    if(not os.path.isfile(filename)):
+        print("No file found")
+        return
 
-# Initialize a new Canvas object
-canvas = Canvas(API_URL, API_KEY)
-# Grab course 123456
-course = canvas.get_course(COURSE_ID)
-
-# Access the course's name
-name = course.name
-print(name)
-
-#assignments = load_assignments()
-#load_modules()
-make_modules()
+    COURSE_ID = courseID #15293
+    API_URL = "https://ursinus.instructure.com"
+    # Canvas API key
+    API_KEY = key #"6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW"
+    
+    # Initialize a new Canvas object
+    canvas = Canvas(API_URL, API_KEY)
+    # Grab course 123456
+    course = canvas.get_course(COURSE_ID)
+    
+    # Access the course's name
+    name = course.name
+    print(name)
+   
+    #assignments = load_assignments(filename)
+    #load_modules(filename)
+    make_modules(course, filename)
+    
+    
+#ModuleCreator(15293, "6723~A2KTPfsPob1ZYugZg3xsrJWaA94bathpwkDemhIyUcZNNGMiTekg6CNtoiFAVtCW", "./Syl.xlsm")

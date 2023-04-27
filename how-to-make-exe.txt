@@ -1,0 +1,24 @@
+Step 1: Get pyinstaller
+
+pip install pyinstaller
+
+
+Step 2: Install all referenced modules
+
+pip install [modulename]
+
+NOTE: If you forget or aren't sure all the modules you need, you can continue these steps and then go to /build/warn-.........txt and scroll through any modules that are considered missing. (top-level) are the main ones to pay attention to.
+
+Step 3: Make the exe
+
+Step 3.1: Navigate to the directory in command prompt (cmd.exe)
+
+cd ./Documents/Github/.......
+You can check if you're there by typing 
+dir
+in command prompt and if you see your file, you're ready to continue.
+
+Step 3.2: Actually making the exe 
+pyinstaller -F --hidden-import "babel.numbers" [filename].py
+
+babel.numbers is just really annoying and this was the only fix I could find online. Seems to work fine though :)
