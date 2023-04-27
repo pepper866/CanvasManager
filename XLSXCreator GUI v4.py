@@ -11,7 +11,7 @@ root = tk.Tk()
 root.geometry("1400x1000") 
 
 # add a title to the window
-root.title("XLSX Template Creator v3")
+root.title("Canvas Manager")
 
 # Create our three tabs (Start, Bulk, Clear)
 tabControl = ttk.Notebook(root)
