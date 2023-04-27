@@ -5,10 +5,12 @@ from ttkwidgets import CheckboxTreeview
 from GuiHelpers import getDay
 from CreateXLSX import createXLSX
 from ModuleCreator import ModuleCreator  #this does not work
+from ModuleCreator import ModuleCreator
 
 def makeStartTab(root):
     # Start Tab (tab1)
-    
+
+
     key = ""
     courseID = -1
     
@@ -42,8 +44,7 @@ def makeStartTab(root):
 
     def moduleCreation():
         ModuleCreator(courseID, key, root.filename) 
-    
-    
+
     # add method to create xlsx file
     def createFile():
         name = title.get() 
@@ -61,20 +62,20 @@ def makeStartTab(root):
 
     # add a box to select the first day of semester
     L1 = tk.Label(root, text="Select First Day: ")
-    L1.pack(side="top", pady=10)
+    L1.pack(side="top", pady=5)
     cal1 = DateEntry(root, selectmode='day')
     cal1.pack(side="top")
 
     # add a box to select the last day of semester
     L2 = tk.Label(root, text="Select Last Day: ")
-    L2.pack(side="top", pady=10)
+    L2.pack(side="top", pady=5)
     cal2 = DateEntry(root, selectmode='day')
     cal2.pack(side="top")
 
     # add option to select days of the week
     # this will be a list of 5 check buttons M-F
     label_days = tk.Label(root, text="Select Days of Week:")
-    label_days.pack(side="top", pady=10)
+    label_days.pack(side="top", pady=5)
 
     dayTree = CheckboxTreeview(root, height = 5)
     dayTree.pack(side="top")
@@ -90,7 +91,7 @@ def makeStartTab(root):
                 dayTree.change_state(day, "checked")
 
     selectAll = tk.Button(root, text="Select All Days", command=select_days)
-    selectAll.pack(side="top", pady = 10)
+    selectAll.pack(side="top", pady = 5)
     
     # create a dictionary to hold our recurring days
     # keys are day (0-4) and values are description of recurring event (e.g. Lab Day)
@@ -164,7 +165,7 @@ def makeStartTab(root):
                year = 2023, month = 1,
                day = 1)
  
-    cal.pack(side="top", pady = 10)
+    cal.pack(side="right")
 
     #Create dictionary to hold our days off
     user_days_off = {}
