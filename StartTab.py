@@ -4,7 +4,6 @@ from tkcalendar import Calendar, DateEntry
 from ttkwidgets import CheckboxTreeview
 from GuiHelpers import getDay
 from CreateXLSX import createXLSX
-from ModuleCreator import ModuleCreator  #this does not work
 from ModuleCreator import ModuleCreator
 
 def makeStartTab(root):
