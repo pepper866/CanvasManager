@@ -8,7 +8,7 @@ from ClearTab import makeClearTab
 root = tk.Tk()
 
 # set the size of the window
-root.geometry("700x1000") 
+root.geometry("1400x1000") 
 
 # add a title to the window
 root.title("XLSX Template Creator v3")
