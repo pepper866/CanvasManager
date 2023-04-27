@@ -7,7 +7,7 @@ Step 2: Install all referenced modules
 
 pip install [modulename]
 
-NOTE: If you forget or aren't sure all the modules, you can continue these steps and then go to /dist/warn-.........txt and scroll through any modules that are considered missing
+NOTE: If you forget or aren't sure all the modules you need, you can continue these steps and then go to /build/warn-.........txt and scroll through any modules that are considered missing. (top-level) are the main ones to pay attention to.
 
 Step 3: Make the exe
 
