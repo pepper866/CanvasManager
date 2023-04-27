@@ -44,6 +44,9 @@ def makeStartTab(root):
 
     def moduleCreation():
         
+        nonlocal courseID
+        nonlocal key
+        
         if(courseID==-1 or key == ""):
             #read in the data, if it exists
             if(os.path.isfile("./CanvasInfo.txt")):
@@ -51,9 +54,9 @@ def makeStartTab(root):
                 with open ("./CanvasInfo.txt", 'r') as file:
                     lines = file.readlines()
                     file.close()
-                nonlocal courseID
+                
                 courseID = int(lines[0].strip())
-                nonlocal key
+                
                 key = lines[1]
         
         ModuleCreator(courseID, key, root.filename) 
