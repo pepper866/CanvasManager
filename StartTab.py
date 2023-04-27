@@ -176,6 +176,45 @@ def makeStartTab(root):
             dayOffBox.insert(tk.END, day+ "\n")
             user_days_off[day] = ""
             
+            #create a pop-up window 
+            window = tk.Toplevel()
+            window.title("Secondary Window")
+            window.config(width=300, height=200)
+            
+            # add option to enter reason for day off
+            reasonLabel = tk.Label(window, text="Enter reason for day off on " + day + ":")
+            reasonLabel.pack(side="top", pady=10)
+            reason = tk.Entry(window, bd=5)
+            reason.pack(side="top")
+            
+            def save_reason():
+                user_days_off[day] = reason.get()
+            
+            #create button to save reason
+            button_save= ttk.Button(window, 
+                    text="Save Day Off Reason",
+                    command=save_reason)
+            button_save.pack(side="bottom")
+            
+            #create button to close window
+            button_close= ttk.Button(window, 
+                    text="Close Window",
+                    command=window.destroy)
+            button_close.pack(side="bottom")
+            
+    #Create a button to pick the days off (one at a time)
+    button = tk.Button(root, text="Select Day Off", command=get_day)
+    button.pack(side="right", pady = 10)
+
+    # add text box to display all selected days off
+    dayOffLabel = tk.Label(root, text = "List of Selected Days Off: ")
+    dayOffLabel.pack(side="left")
+    dayOffBox = tk.Text(root, height = 10, width = 30)
+    dayOffBox.pack(side="left")
+
+    # finally, add a button to generate the Xlsx template
+    button = tk.Button(root, text="Create Spreadsheet", command= createFile)
+    button.pack(side = "bottom", pady=10)
     
     #Create button to select File
     buttonFileSelect = tk.Button(root, text = "Select File", command = selectFile)
@@ -189,58 +228,9 @@ def makeStartTab(root):
     
     buttonRunModules = tk.Button(root, text = "Run Module Creation", command = moduleCreation)
     buttonRunModules.pack(side = tk.LEFT)
-    
-    # finally, add a button to generate the Xlsx template
-    button = tk.Button(root, text="Create Spreadsheet", command= createFile)
-    button.pack(side = tk.RIGHT, pady=10)
-    
-    
-    user_days_off[day] = ""
-    
-    #create a pop-up window 
-    window = tk.Toplevel()
-    window.title("Secondary Window")
-    window.config(width=300, height=200)
-    
-    # add option to enter reason for day off
-    reasonLabel = tk.Label(window, text="Enter reason for day off on " + str(day) + ":")
-    reasonLabel.pack(side="top", pady=10)
-    reason = tk.Entry(window, bd=5)
-    reason.pack(side="top")
-    
-    def save_reason():
-        user_days_off[day] = reason.get()
-    
-    #create button to save reason
-    button_save= ttk.Button(window, 
-            text="Save Day Off Reason",
-            command=save_reason)
-    button_save.pack(side="bottom")
-    
-    #create button to close window
-    button_close= ttk.Button(window, 
-            text="Close Window",
-            command=window.destroy)
-    button_close.pack(side="bottom")
-            
-            
-            
-            
-            
 
-    #Create a button to pick the days off (one at a time)
-    button = tk.Button(root, text="Select Day Off", command=get_day)
-    button.pack(side="top", pady = 10)
 
-    # add text box to display all selected days off
-    dayOffLabel = tk.Label(root, text = "List of Selected Days Off: ")
-    dayOffLabel.pack(side="top")
-    dayOffBox = tk.Text(root, height = 10, width = 30)
-    dayOffBox.pack(side="top")
 
-    
-    
-    
 def SaveInfoWindow():
     
     
